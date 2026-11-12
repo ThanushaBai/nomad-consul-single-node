@@ -1,6 +1,6 @@
 # Nomad & Consul Single-Node Infrastructure
 
-This repository contains the configuration files to deploy HashiCorp Nomad and Consul on a single machine (tested on WSL2/Ubuntu). 
+This repository contains the configuration files and documentation to deploy HashiCorp Nomad and Consul on a single machine (tested on WSL2/Ubuntu). 
 
 ## Architecture
 - **Nomad**: Acts as both Server and Client (Single-node).
@@ -38,3 +38,21 @@ Verify Nomad successfully registered with Consul:
 bash
 consul catalog services
 # Output should include: consul, nomad, nomad-client
+Proof of Work (Screenshots)
+1. Consul Web UI
+The local consul service is passing health checks.
+https://screenshots/consul-services.png
+
+The nomad and nomad-client services are registered and passing, explicitly tagged as "Registered via Nomad".
+https://screenshots/consul-integration.png
+
+2. Nomad Web UI
+The ASUS-X515.global server node is Alive and elected as the cluster Leader.
+https://screenshots/nomad-servers.png
+
+The ASUS-X515 client node is Ready and Eligible to receive workloads.
+https://screenshots/nomad-clients.png
+
+3. CLI Integration Verification
+Terminal command consul catalog services confirming both Nomad server and client are successfully registered.
+https://screenshots/terminal-verification.png
