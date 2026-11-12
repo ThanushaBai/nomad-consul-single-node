@@ -1,17 +1,21 @@
-Nomad & Consul Single-Node Infrastructure
-This repository contains the configuration files and documentation to deploy HashiCorp Nomad and Consul on a single machine (tested on WSL2/Ubuntu).
+I am so sorry for the confusion! You are completely right. The issue is that the "outer" markdown block I was using to send it to you was breaking the "inner" code blocks, causing GitHub to read it as one giant messy block of text.
 
-Architecture
-Nomad: Acts as both Server and Client (Single-node).
+Here is the **entire README** as a single markdown block. Just click the copy icon in the top right of the box below and paste it directly into GitHub.
 
-Consul: Acts as a single-node server with UI enabled.
+```markdown
+# Nomad & Consul Single-Node Infrastructure
 
-Integration: Nomad is configured to auto-register with Consul using the consul block.
+This repository contains the configuration files and documentation to deploy HashiCorp Nomad and Consul on a single machine (tested on WSL2/Ubuntu). 
 
-1. Prerequisites & Installation
+## Architecture
+- **Nomad**: Acts as both Server and Client (Single-node).
+- **Consul**: Acts as a single-node server with UI enabled.
+- **Integration**: Nomad is configured to auto-register with Consul using the `consul` block.
+
+## 1. Prerequisites & Installation
 Install HashiCorp tools via the official APT repository:
 
-bash
+```bash
 # Add HashiCorp GPG key
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 
@@ -20,62 +24,78 @@ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://
 
 # Install Consul and Nomad
 sudo apt-get update && sudo apt-get install -y consul nomad
-2. Deployment Steps
-Step 1: Apply WSL2 Workaround
+```
+
+## 2. Deployment Steps
+
+### Step 1: Apply WSL2 Workaround
 Apply this fix to prevent the Nomad Client from failing due to missing bridge kernel modules in WSL2:
 
-bash
+```bash
 sudo mkdir -p /lib/modules/$(uname -r)/
 echo '_/bridge.ko' | sudo tee -a /lib/modules/$(uname -r)/modules.builtin
-Step 2: Apply Configurations
-Copy the .hcl configuration files from this repository to their respective system directories:
+```
 
-bash
+### Step 2: Apply Configurations
+Copy the `.hcl` configuration files from this repository to their respective system directories:
+
+```bash
 sudo cp consul.hcl /etc/consul.d/consul.hcl
 sudo cp nomad.hcl /etc/nomad.d/nomad.hcl
-Step 3: Set Permissions
+```
+
+### Step 3: Set Permissions
 Create the data directories and assign the correct ownership:
 
-bash
+```bash
 sudo mkdir -p /opt/consul /opt/nomad
 sudo chown -R consul:consul /opt/consul
 sudo chown -R nomad:nomad /opt/nomad
-Step 4: Start Services
+```
+
+### Step 4: Start Services
 Enable and start both services using systemd:
 
-bash
+```bash
 sudo systemctl enable --now consul
 sudo systemctl enable --now nomad
-Step 5: Verification
+```
+
+### Step 5: Verification
 Verify that Nomad successfully registered itself with Consul:
 
-bash
+```bash
 consul catalog services
 # Expected Output:
 # consul
 # nomad
 # nomad-client
-Proof of Work (Screenshots)
-1. Consul Web UI
-The local consul service is passing health checks.
+```
 
-https://screenshots/consul-services.png
+---
 
-The nomad and nomad-client services are registered and passing, explicitly tagged as "Registered via Nomad".
+## Proof of Work (Screenshots)
 
-https://screenshots/consul-integration.png
+### 1. Consul Web UI
+The local `consul` service is passing health checks.
 
-2. Nomad Web UI
-The ASUS-X515.global server node is Alive and elected as the cluster Leader.
+![Consul Services UI](screenshots/consul-services.png)
 
-https://screenshots/nomad-servers.png
+The `nomad` and `nomad-client` services are registered and passing, explicitly tagged as "Registered via Nomad".
 
-The ASUS-X515 client node is Ready and Eligible to receive workloads.
+![Consul Nomad Integration](screenshots/consul-integration.png)
 
-https://screenshots/nomad-clients.png
+### 2. Nomad Web UI
+The `ASUS-X515.global` server node is Alive and elected as the cluster Leader.
 
-3. CLI Integration Verification
-Terminal command consul catalog services confirming both Nomad server and client are successfully registered.
+![Nomad Servers UI](screenshots/nomad-servers.png)
 
-https://screenshots/terminal-verification.png
+The `ASUS-X515` client node is Ready and Eligible to receive workloads.
 
+![Nomad Clients UI](screenshots/nomad-clients.png)
+
+### 3. CLI Integration Verification
+Terminal command `consul catalog services` confirming both Nomad server and client are successfully registered.
+
+![Terminal Output](screenshots/terminal-verification.png)
+```
